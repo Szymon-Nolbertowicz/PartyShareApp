@@ -3,6 +3,7 @@ package com.example.partyshare
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +21,7 @@ class Dashboard : AppCompatActivity() {
 
         val tvLogOut = findViewById(R.id.tvLogOut) as TextView
         val toProfile = findViewById(R.id.navToProfile) as ImageView
+        val btnOCR = findViewById<Button>(R.id.btnOCR)
 
         toProfile.setOnClickListener {
             val intent = Intent(this, userCreate::class.java)
@@ -32,6 +34,11 @@ class Dashboard : AppCompatActivity() {
             startActivity(intent)
             Toast.makeText(this, "Successfuly logged out!", Toast.LENGTH_SHORT).show()
             finish()
+        }
+
+        btnOCR.setOnClickListener {
+            val intent = Intent(this, receiptScanner::class.java)
+            startActivity(intent)
         }
     }
 }
