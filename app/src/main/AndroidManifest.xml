@@ -21,10 +21,7 @@
         <activity android:name=".userCreate" />
         <activity android:name=".Login" />
         <activity android:name=".Dashboard" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name="com.canhub.cropper.CropImageActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

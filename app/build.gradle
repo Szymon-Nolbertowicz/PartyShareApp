@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
     implementation "androidx.activity:activity-ktx:1.2.0-alpha06"
+    implementation 'com.github.CanHub:Android-Image-Cropper:3.3.5'
     implementation 'com.github.yalantis:ucrop:2.2.6-native'
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
 
