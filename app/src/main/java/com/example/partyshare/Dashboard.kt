@@ -19,7 +19,7 @@ class Dashboard : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        val tvLogOut = findViewById(R.id.tvLogOut) as TextView
+
         val toProfile = findViewById(R.id.navToProfile) as ImageView
         val btnOCR = findViewById<Button>(R.id.btnOCR)
 
@@ -28,13 +28,7 @@ class Dashboard : AppCompatActivity() {
             startActivity(intent)
         }
 
-        tvLogOut.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-            Toast.makeText(this, "Successfuly logged out!", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+
 
         btnOCR.setOnClickListener {
             val intent = Intent(this, receiptScanner::class.java)
