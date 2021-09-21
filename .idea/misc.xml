@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_email_change.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/activity_password_change.xml" value="0.22291666666666668" />
@@ -13,6 +14,7 @@
         <entry key="app/src/main/res/layout/dialog_add_friend.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/dialog_edit_profile.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/dialog_forgot_password.xml" value="0.22291666666666668" />
+        <entry key="app/src/main/res/layout/toolbar_dashboard.xml" value="0.23854166666666668" />
       </map>
     </option>
   </component>
