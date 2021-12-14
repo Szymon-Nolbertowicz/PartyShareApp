@@ -6,4 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".friendsRequestsList">
 
+    <include layout="@layout/toolbar_friends_requests"/>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recycle_Viewer"
+    android:layout_marginTop="50dp"
+    android:padding="4dp"
+    android:clipToPadding="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,18 +48,6 @@
 
     <Button
         app:layout_constraintTop_toBottomOf="@+id/btnCreate"
-        android:id="@+id/btnJoin"
-        android:layout_margin="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:text="Join A Party"
-        android:backgroundTint="#ff3a5c"/>
-
-    <Button
-        app:layout_constraintTop_toBottomOf="@+id/btnJoin"
         android:id="@+id/btnPartyList"
         android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,27 +57,17 @@
         android:textColor="#ffffff"
         android:text="My parties"
         android:backgroundTint="#ff3a5c"/>
-    <Button
-        app:layout_constraintTop_toBottomOf="@+id/btnPartyList"
-        android:id="@+id/btnAddFriend"
-        android:layout_margin="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:text="Add Friend"
-        android:backgroundTint="#ff3a5c"/>
 
     <Button
-        app:layout_constraintTop_toBottomOf="@+id/btnAddFriend"
-        android:id="@+id/btnFriendRequests"
+        app:layout_constraintTop_toBottomOf="@+id/btnPartyList"
+        android:id="@+id/btnFriendsList"
         android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:text="Friend Requests"
+        android:text="Friends List"
         android:backgroundTint="#ff3a5c"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

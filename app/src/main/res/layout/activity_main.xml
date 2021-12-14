@@ -4,17 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <TextView
-        android:layout_width="wrap_content"
+    tools:context=".MainActivity"
+    android:background="@drawable/partysharebg">
+
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvEmail"
-        android:text="Register Account"
-        android:textSize="30dp"
-        android:textColor="@color/black"/>
+        android:src="@drawable/partysharelogo"/>
 
 <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/tvEmail"
@@ -26,12 +22,14 @@
     android:layout_marginStart="30dp"
     android:hint="Enter E-mail"
     android:layout_marginEnd="30dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:textColorHint="#ff3a5c">
     <EditText
         android:id="@+id/editEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"/>
+        android:layout_height="50dp"
+        android:inputType="text"
+        android:background="#15ffffff"/>
 </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -40,15 +38,18 @@
         app:layout_constraintTop_toBottomOf="@+id/tvEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="30dp"
         android:hint="Enter Password"
         android:layout_marginEnd="30dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textColorHint="#ff3a5c">
         <EditText
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:layout_height="50dp"
+            android:inputType="textPassword"
+            android:background="#15ffffff"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button
         android:id="@+id/btnRegister"
@@ -59,8 +60,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPassword"
-        android:layout_margin="30dp"
-        android:background="@color/black"/>
+        android:layout_margin="40dp"
+        android:background="#ffa31a"/>
 
     <TextView
         android:id="@+id/tvLogin"
@@ -68,7 +69,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnRegister"
-        android:textColor="@color/design_default_color_primary_dark"
+        android:textColor="#ff3a5c"
         android:layout_margin="30dp"
         android:text="Already a member? Sign in here!"
         android:textSize="20dp"
