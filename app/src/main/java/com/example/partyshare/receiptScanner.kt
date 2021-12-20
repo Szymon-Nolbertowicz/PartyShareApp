@@ -111,19 +111,21 @@ class receiptScanner : AppCompatActivity() {
                         Log.e("Block:", block.text)
                         counter++
                         for(line in block.lines) {
-
                             if (counter == 1) {
-                                val uuid = UUID.randomUUID()
-                                hashMapOfExpenses["expenseID"] = uuid
-                                hashMapOfExpenses["expenseName"] = line.text
-                                Log.e("Name of Expense", line.text)
-                                arrayOfElements.add(uuid)
+                                if(line.text.length > 2) {
+                                    val uuid = UUID.randomUUID()
+                                    hashMapOfExpenses["expenseID"] = uuid
+                                    hashMapOfExpenses["expenseName"] = line.text
+                                    Log.e("Name of Expense", line.text)
+                                    arrayOfElements.add(uuid)
+                                } else counter--
 
                             }
-                            if(counter == 2) {
+                            if(counter > 1 && line.text.length > 5) {
+                                val size = line.text.replace(" ", "").length
                                 Log.e("Line:", line.text)
                                 val data = line.text.replace(" ", "")
-                                val dataFinal = data.replace(",", ".").drop(6)
+                                val dataFinal = data.replace(",", ".").drop(size-5)
                                 val dataSumbit = dataFinal.filter { it.isDigit() || it == '.' } .toDouble()
                                 hashMapOfExpenses["expenseValue"] = dataSumbit
                                 Log.e("Final value of expense ", dataSumbit.toString())
