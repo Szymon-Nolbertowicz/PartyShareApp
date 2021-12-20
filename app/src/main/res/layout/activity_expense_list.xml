@@ -10,7 +10,7 @@
         android:id="@+id/toolbarEL"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleViewA"
+        android:id="@+id/recycleViewExpenses"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarEL"

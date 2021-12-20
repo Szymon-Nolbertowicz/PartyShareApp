@@ -1,3 +1,3 @@
 package com.example.partyshare
 
-data class expense(var ExpenseName : String ?= null, var ExpenseValue : Double ?= null, var CreatorFullName: String ?= null)
+data class expense(var expenseName : String ?= null, var expenseValue : Double ?= null, var addedBy: String ?= null)

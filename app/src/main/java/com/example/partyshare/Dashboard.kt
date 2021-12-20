@@ -32,6 +32,7 @@ class Dashboard : AppCompatActivity() {
         val btnPartyList = findViewById<Button>(R.id.btnPartyList)
 
 
+
         btnPartyList.setOnClickListener {
             val intent = Intent(this,partyList::class.java)
             startActivity(intent)

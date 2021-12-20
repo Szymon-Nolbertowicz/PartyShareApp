@@ -70,4 +70,6 @@
         android:text="Friends List"
         android:backgroundTint="#ff3a5c"/>
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

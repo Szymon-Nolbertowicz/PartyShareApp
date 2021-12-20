@@ -5,12 +5,11 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,7 +30,7 @@ class welcomeView : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
-        var storageRef = storage.reference
+        val storageRef = storage.reference
 
 
         val user = auth.currentUser
@@ -43,10 +42,12 @@ class welcomeView : AppCompatActivity() {
             //userEmail = user.email
         }
 
-        var mFirstName = findViewById(R.id.etFirstName) as EditText
-        var mLastName = findViewById(R.id.etLastName) as EditText
-        var saveBtn = findViewById(R.id.tvSave) as TextView
-        var pickPhoto = findViewById(R.id.ivPhoto) as ImageView
+        val mFirstName = findViewById(R.id.etFirstName) as EditText
+        val mLastName = findViewById(R.id.etLastName) as EditText
+        val saveBtn = findViewById(R.id.tvSave) as TextView
+        val pickPhoto = findViewById(R.id.ivPhoto) as ImageView
+        val limitSeekBar = findViewById<SeekBar>(R.id.sbLimit)
+        val etLimitValue = findViewById<TextView>(R.id.etLimitValue)
 
         pickPhoto.setOnClickListener {
             selectPhoto()
@@ -68,15 +69,29 @@ class welcomeView : AppCompatActivity() {
             //var usermail = userEmail
 
 
-            saveFireStore(firstName, lastName, userid)
+            saveFireStore(firstName, lastName, userid, etLimitValue.text.toString().toInt())
             var intent = Intent(this, Dashboard::class.java)
             startActivity(intent)
         }
 
+        limitSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                etLimitValue.text = progress.toString()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+        })
 
     }
 
-    fun saveFireStore(firstname: String, lastname: String, uid: String) {
+    fun saveFireStore(firstname: String, lastname: String, uid: String, limitValue: Number) {
         val user: MutableMap<String, Any> = HashMap()
         var usercheck = auth.currentUser
         var email = "value"
@@ -87,6 +102,7 @@ class welcomeView : AppCompatActivity() {
         user["lastName"] = lastname
         user["uID"] = uid
         user["email"] = email
+        user["limitValue"] = limitValue
 
         if (usercheck != null) {
 

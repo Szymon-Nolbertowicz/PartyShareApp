@@ -10,21 +10,21 @@
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:text="Let's get \nto know..."
+        android:textColor="#ff3a5c"
         android:textSize="50dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="30dp"
-        app:layout_constraintVertical_bias="0.179"
-        android:textColor="#ff3a5c"
-        android:textStyle="bold"/>
+        app:layout_constraintVertical_bias="0.07" />
 
     <EditText
         android:id="@+id/etFirstName"
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/tvWelcome"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:layout_marginRight="30dp"
         android:layout_marginLeft="30dp"
         android:hint="Your first name"
@@ -40,13 +40,69 @@
         android:hint="Your last name"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toBottomOf="@id/etLastName"
+        android:id="@+id/tvLimitLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="Set your monthly spendings limit\n(you can change it later)"
+        android:textAlignment="center"
+        android:textSize="15dp"
+        android:textColor="@color/black"/>
+
+    <SeekBar
+        android:layout_margin="20dp"
+        android:id="@+id/sbLimit"
+        app:layout_constraintTop_toBottomOf="@+id/tvLimitLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:min="0"
+        android:max="1000"
+        android:progress="500"/>
+
+ <View
+     android:id="@+id/viewCenter"
+     android:layout_width="3dp"
+     android:layout_height="match_parent"
+     app:layout_constraintLeft_toLeftOf="parent"
+     app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/sbLimit"
+        android:layout_marginTop="30dp"
+        android:id="@+id/etLimitValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toLeftOf="@id/viewCenter"
+        android:text="500"
+        android:textColor="@color/black"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/tvPLN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/viewCenter"
+        app:layout_constraintTop_toBottomOf="@id/sbLimit"
+        android:layout_marginTop="30dp"
+        android:text="PLN"
+        android:textSize="20dp"
+        android:textColor="@color/black"/>
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/etLastName"
-        android:layout_marginTop="60dp">
+        app:layout_constraintTop_toBottomOf="@+id/etLimitValue"
+        android:layout_marginTop="25dp">
 
         <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivPhoto"
@@ -74,7 +130,7 @@
             android:paddingRight="30dp"
             android:textSize="18dp"
             android:textColor="#ff3a5c"
-            android:layout_marginTop="60dp"/>
+            android:layout_marginTop="20dp"/>
 
 
 

@@ -13,12 +13,14 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class party_main : AppCompatActivity() {
 
     private lateinit var auth:FirebaseAuth
     private lateinit var db:FirebaseFirestore
+    private lateinit var arrayUpdate: ArrayList<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,7 @@ class party_main : AppCompatActivity() {
         val toolbarName = findViewById<TextView>(R.id.etTollbarName)
         val tvBalance = findViewById<TextView>(R.id.tvMoney)
 
+        updateDatabase(partyID)
         setInfo(etWelcomeText, toolbarName, partyName, partyID, tvBalance)
 
         val btnAddExpense = findViewById<ImageView>(R.id.btnAddExpense)
@@ -42,7 +45,15 @@ class party_main : AppCompatActivity() {
         val btnScanExpense = findViewById<ImageView>(R.id.btnScanner)
         val btnConfirmPayment = findViewById<ImageView>(R.id.btnConfirmPayment)
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
+        val btnReceiptList = findViewById<ImageView>(R.id.ivReceiptList)
 
+
+        btnReceiptList.setOnClickListener {
+            intent = Intent(this, expenseList::class.java)
+            intent.putExtra("PARTY_ID", partyID)
+                .putExtra("PARTY_NAME", partyName)
+            startActivity(intent)
+        }
 
         btnAddExpense.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -66,7 +77,10 @@ class party_main : AppCompatActivity() {
         }
 
         btnMembers.setOnClickListener {
-            TODO("Not implemented yet")
+            intent = Intent(this, membersList::class.java)
+            intent.putExtra("PARTY_ID", partyID)
+                .putExtra("PARTY_NAME", partyName)
+            startActivity(intent)
         }
 
         btnScanExpense.setOnClickListener {
@@ -84,10 +98,30 @@ class party_main : AppCompatActivity() {
 
     }
 
+    private fun updateDatabase(partyID: String) {
+        var ref = db.collection("parties").document(partyID).collection("members")
+            .get()
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    arrayUpdate.add(it.result.size())
+                    Log.e("SIZE", it.result.size().toString())
+                }
+            }
+
+        db.collection("parties").document(partyID)
+            .get()
+            .addOnCompleteListener {
+                arrayUpdate.add(it.result.data!!.getValue("total"))
+                Log.e("SIZE - total", arrayUpdate.toString())
+            }
+
+    }
+
     private fun addExpense(name: String, cost: Double, partyID: String) {
         var updateParty: MutableMap<String, Any> = HashMap()
         var updateUserBalance: MutableMap<String, Any> = HashMap()
         var updateExpenseList: MutableMap<String, Any> = HashMap()
+        var fullname: String = ""
         val currUser = auth.currentUser
         db.collection("parties")
             .whereEqualTo("ID", partyID)
@@ -125,10 +159,24 @@ class party_main : AppCompatActivity() {
         updateExpenseList["ID"] = expenseID
         updateExpenseList["expenseName"] = name
         updateExpenseList["expenseValue"] = cost
-        updateExpenseList["addedBy"] = currUser.uid
 
-        db.collection("parties").document(partyID).collection("expenses").document(expenseID)
-            .set(updateExpenseList)
+        db.collection("users")
+            .whereEqualTo("uID", currUser.uid)
+            .get()
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    for(document in it.result!!) {
+                        val firstName = document.data.getValue("firstName").toString()
+                        val lastName = document.data.getValue("lastName").toString()
+                        fullname = firstName + " " + lastName
+                        updateExpenseList["addedBy"] = fullname
+                        db.collection("parties").document(partyID).collection("expenses").document(expenseID)
+                            .set(updateExpenseList)
+
+                    }
+                }
+            }
+
     }
 
     private fun setInfo(etWelcomeText: TextView, toolbarName: TextView, partyName: String, partyID: String, tvBalance: TextView) {

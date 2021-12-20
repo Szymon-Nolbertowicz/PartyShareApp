@@ -15,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PartyShare">
         <activity
+            android:name=".friendsListParty"
+            android:exported="true" />
+        <activity
+            android:name=".membersList"
+            android:exported="true" />
+        <activity
             android:name=".expenseList"
             android:exported="true" />
         <activity

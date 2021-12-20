@@ -16,15 +16,17 @@
         <entry key="app/src/main/res/layout/activity_email_change.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/activity_expense_list.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/activity_friends_list.xml" value="0.3296875" />
+        <entry key="app/src/main/res/layout/activity_friends_list_party.xml" value="0.3307291666666667" />
         <entry key="app/src/main/res/layout/activity_friends_requests_list.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.24518992106119797" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2728314208984375" />
+        <entry key="app/src/main/res/layout/activity_members_list.xml" value="0.3307291666666667" />
         <entry key="app/src/main/res/layout/activity_party_list.xml" value="0.31614583333333335" />
         <entry key="app/src/main/res/layout/activity_party_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_password_change.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/activity_receipt_scanner.xml" value="0.25677083333333334" />
         <entry key="app/src/main/res/layout/activity_user_create.xml" value="0.22291666666666668" />
-        <entry key="app/src/main/res/layout/activity_welcome_view.xml" value="0.1636835734049479" />
+        <entry key="app/src/main/res/layout/activity_welcome_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_add_expense.xml" value="0.3109375" />
         <entry key="app/src/main/res/layout/dialog_add_friend.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/dialog_create_party.xml" value="0.3307291666666667" />
@@ -37,12 +39,15 @@
         <entry key="app/src/main/res/layout/toolbar_dashboard.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/toolbar_email_change.xml" value="0.33489583333333334" />
         <entry key="app/src/main/res/layout/toolbar_expense_list.xml" value="0.3302083333333333" />
+        <entry key="app/src/main/res/layout/toolbar_friends_list_party.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toolbar_friends_requests.xml" value="0.3296875" />
         <entry key="app/src/main/res/layout/toolbar_friendslist.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/toolbar_members_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toolbar_party_main.xml" value="0.37447916666666664" />
         <entry key="app/src/main/res/layout/toolbar_partylist.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/toolbar_receipt_scanner.xml" value="0.28532608695652173" />
         <entry key="app/src/main/res/layout/user_row.xml" value="0.3296875" />
+        <entry key="app/src/main/res/layout/user_row_add.xml" value="0.3307291666666667" />
         <entry key="app/src/main/res/layout/user_row_inv.xml" value="0.3296875" />
       </map>
     </option>

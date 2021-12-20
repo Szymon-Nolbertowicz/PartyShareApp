@@ -107,7 +107,8 @@ class friendsList : AppCompatActivity() {
     private fun friendRequest(email: String){
         val requestStatusRec: MutableMap<String, Any> = HashMap()
         val currUser = auth.currentUser!!
-        val ref = database.collection("users")
+        var friendUID: String = "x"
+        database.collection("users")
             .get()
             .addOnCompleteListener {
                 val mail: StringBuffer = StringBuffer()
@@ -117,15 +118,23 @@ class friendsList : AppCompatActivity() {
                             requestStatusRec["firstName"] = document.data.getValue("firstName")
                             requestStatusRec["lastName"] = document.data.getValue("lastName")
                             requestStatusRec["uID"] = currUser.uid
+                            Log.e("REQUESTED1", requestStatusRec.toString())
                         }
+
+                        Log.e("REQUESTED2", requestStatusRec.toString())
+                        database.collection("users").document(friendUID).collection("friends").document(currUser.uid)
+                            .update(requestStatusRec)
+
                         if(document.data.getValue("email").toString() == email ) {
                             Log.d("User UID", document.data.getValue("uID").toString())
-                            var friendUID = document.data.getValue("uID").toString()
+                            friendUID = document.data.getValue("uID").toString()
                             var user = auth.currentUser
+                            Log.e("REQUESTED3", requestStatusRec.toString())
                             if(user != null)
                             {
                                 val requestStatus: MutableMap<String, Any> = HashMap()
                                 if(friendUID.isNotEmpty()) {
+                                    Log.e("REQUESTED 4", requestStatusRec.toString())
                                     requestStatus["status"] = "pending"
                                     requestStatus["firstName"] = document.data.getValue("firstName")
                                     requestStatus["lastName"] = document.data.getValue("lastName")
