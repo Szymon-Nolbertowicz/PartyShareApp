@@ -26,7 +26,6 @@ class Dashboard : AppCompatActivity() {
 
 
         val toProfile = findViewById(R.id.navToProfile) as ImageView
-        val btnOCR = findViewById<Button>(R.id.btnOCR)
         val btnFriendsList = findViewById<Button>(R.id.btnFriendsList)
         val btnCreateParty = findViewById<Button>(R.id.btnCreate)
         val btnPartyList = findViewById<Button>(R.id.btnPartyList)
@@ -34,8 +33,19 @@ class Dashboard : AppCompatActivity() {
 
 
         btnPartyList.setOnClickListener {
-            val intent = Intent(this,partyList::class.java)
-            startActivity(intent)
+            var fullName: String
+            database.collection("users").document(auth.currentUser.uid)
+                .get()
+                .addOnCompleteListener {
+                    if(it.isSuccessful) {
+                        val firstName = it.result.data!!.getValue("firstName").toString()
+                        val lastName = it.result.data!!.getValue("lastName").toString()
+                        fullName = firstName + " " + lastName
+                        val intent = Intent(this,partyList::class.java)
+                            .putExtra("FULLNAME", fullName)
+                        startActivity(intent)
+                    }
+                }
         }
 
         toProfile.setOnClickListener {
@@ -45,11 +55,6 @@ class Dashboard : AppCompatActivity() {
 
         btnFriendsList.setOnClickListener {
             val intent = Intent(this, friendsList::class.java)
-            startActivity(intent)
-        }
-
-        btnOCR.setOnClickListener {
-            val intent = Intent(this, receiptScanner::class.java)
             startActivity(intent)
         }
 
@@ -74,7 +79,6 @@ class Dashboard : AppCompatActivity() {
     }
 
 
-
     private fun partyCreate(name: String, partyID: String) {
         var currUser = auth.currentUser
         val party: MutableMap<String, Any> = HashMap()
@@ -82,6 +86,7 @@ class Dashboard : AppCompatActivity() {
         party["name"] = name
         party["ID"] = partyID
         party["total"] = 0
+        party["membersQty"] = 1
 
         val ref = database.collection("parties").document(partyID)
             .set(party)

@@ -20,11 +20,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.canhub.cropper.CropImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -36,11 +38,13 @@ class receiptScanner : AppCompatActivity() {
     private lateinit var ivCroppedImage: ImageView
     private lateinit var tvResult: TextView
     private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
-    private lateinit var arrayOfElements: ArrayList<Any>
+    private lateinit var arrayOfElements: ArrayList<receipt>
 
     private val TAG = "ML_Kit_text_recognition"
     private val testImage = R.drawable.testimage1
     private var selectedImage:Bitmap? = null
+
+
 
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
         override fun createIntent(context: Context, input: Any?): Intent {
@@ -57,6 +61,11 @@ class receiptScanner : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_scanner)
+
+        val partyID = getIntent().getStringExtra("PARTY_ID").toString()
+        val partyName = getIntent().getStringExtra("PARTY_NAME").toString()
+        val fullName = getIntent().getStringExtra("FULLNAME").toString()
+        Log.e("FullName in receipt", fullName)
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseFirestore.getInstance()
@@ -84,7 +93,7 @@ class receiptScanner : AppCompatActivity() {
         }
 
         btnExtract.setOnClickListener {
-            startTextRecognition()
+            startTextRecognition(partyID, partyName, fullName)
         }
 
         btnBack.setOnClickListener {
@@ -97,47 +106,51 @@ class receiptScanner : AppCompatActivity() {
         selectedImage = BitmapFactory.decodeResource(resources, testImage)
     }
 
-    private fun startTextRecognition() {
-        val hashMapOfExpenses: MutableMap<String, Any> = HashMap()
-        val currUser = auth.currentUser.uid
+    private fun startTextRecognition(partyID: String, partyName: String, fullName:String) {
+        var sum : Double = 0.0
         var counter = 0
-        var counter2 = -1
+        var i = 0;
         val inputImage = InputImage.fromBitmap(selectedImage!!, 0)
         val recognize = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         recognize.process(inputImage)
                 .addOnSuccessListener {
-                    tvResult.text = it.text
                     for(block in it.textBlocks) {
-                        Log.e("Block:", block.text)
                         counter++
                         for(line in block.lines) {
                             if (counter == 1) {
                                 if(line.text.length > 2) {
+                                    val receiptItem = receipt()
                                     val uuid = UUID.randomUUID()
-                                    hashMapOfExpenses["expenseID"] = uuid
-                                    hashMapOfExpenses["expenseName"] = line.text
-                                    Log.e("Name of Expense", line.text)
-                                    arrayOfElements.add(uuid)
+                                    receiptItem.expenseID = uuid.toString()
+                                    receiptItem.expenseName = line.text
+                                    arrayOfElements.add(receiptItem)
                                 } else counter--
 
                             }
                             if(counter > 1 && line.text.length > 5) {
                                 val size = line.text.replace(" ", "").length
-                                Log.e("Line:", line.text)
                                 val data = line.text.replace(" ", "")
                                 val dataFinal = data.replace(",", ".").drop(size-5)
                                 val dataSumbit = dataFinal.filter { it.isDigit() || it == '.' } .toDouble()
-                                hashMapOfExpenses["expenseValue"] = dataSumbit
-                                Log.e("Final value of expense ", dataSumbit.toString())
-                            }
-                            for(element in line.elements) {
-                                //Log.e("Element:", element.text)
+                                sum += dataSumbit
+                                arrayOfElements[i].expenseValue = dataSumbit
+                                i++;
                             }
                         }
                     }
 
                     Log.d(TAG, "Successful recognition")
                     Log.e("Array of elements", arrayOfElements.toString())
+                    Log.e("Sum", sum.toString())
+                    val intent = Intent(this, receiptDataSend::class.java)
+                    val ArrayAsString = Gson().toJson(arrayOfElements)
+                    intent.putExtra("Array", ArrayAsString)
+                        .putExtra("Sum", sum)
+                        .putExtra("PARTY_ID", partyID)
+                        .putExtra("PARTY_NAME", partyName)
+                        .putExtra("FULLNAME", fullName)
+                    startActivity(intent)
+
 
                 }
                 .addOnFailureListener {

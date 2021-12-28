@@ -4,6 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".receiptDataSend">
+    tools:context=".expenseList">
+
+    <include layout="@layout/toolbar_expense_list"
+        android:id="@+id/toolbarEL"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleViewDataSend"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarEL"
+
+        android:layout_width="0dp"
+        android:layout_height="570dp"/>
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CONFIRM AND SEND"
+        app:layout_constraintTop_toBottomOf="@id/recycleViewDataSend"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

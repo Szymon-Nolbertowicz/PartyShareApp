@@ -32,6 +32,7 @@ class partyList : AppCompatActivity() {
         val recyclerView = findViewById(R.id.recycle_partyList) as RecyclerView
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
         val btnJoinParty = findViewById<FloatingActionButton>(R.id.btnJoin)
+        val fullName = getIntent().getStringExtra("FULLNAME")
 
         btnJoinParty.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -73,6 +74,7 @@ class partyList : AppCompatActivity() {
                 val intent = Intent(this@partyList, party_main::class.java)
                 intent.putExtra("PARTY_ID", partyArrayList[position].ID)
                 intent.putExtra("PARTY_NAME", partyArrayList[position].name.toString())
+                    .putExtra("FULLNAME", fullName)
                 startActivity(intent)
             }
         })
@@ -119,6 +121,17 @@ class partyList : AppCompatActivity() {
                                 .set(party)
                         }
                     }
+                }
+            }
+
+        database.collection("parties").document(id)
+            .get()
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    var currMemberQty = it.result.data!!.getValue("membersQty").toString().toInt()
+                    currMemberQty++
+                    database.collection("parties").document(id)
+                        .update("membersQty", currMemberQty)
                 }
             }
 

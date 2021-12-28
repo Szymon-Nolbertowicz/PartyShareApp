@@ -97,6 +97,17 @@ class friendsListParty : AppCompatActivity() {
                         }
 
                         else {
+                            database.collection("parties").document(partyID)
+                                .get()
+                                .addOnCompleteListener {
+                                    if(it.isSuccessful) {
+                                        var currMemberQty = it.result.data!!.getValue("membersQty").toString().toInt()
+                                        currMemberQty++
+                                        database.collection("parties").document(partyID)
+                                            .update("membersQty", currMemberQty)
+                                    }
+                                }
+
                             database.collection("users").document(clickedItem)
                                 .get()
                                 .addOnCompleteListener {
