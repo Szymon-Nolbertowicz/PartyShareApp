@@ -98,6 +98,7 @@ class partyList : AppCompatActivity() {
                             member["uID"] = currUser.uid
                             member["role"] = "member"
                             member["balance"] = 0
+                            member["transferStatus"] = "NOT REQUESTED YET"
 
                             database.collection("parties").document(id).collection("members")
                                 .document(currUser.uid)

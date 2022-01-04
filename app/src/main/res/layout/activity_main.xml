@@ -10,7 +10,8 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/partysharelogo"/>
+        android:src="@drawable/partysharelogo"
+        tools:ignore="MissingConstraints" />
 
 <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/tvEmail"
@@ -29,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:inputType="text"
-        android:background="#15ffffff"/>
+        android:background="#15ffffff"
+        android:textColor="@color/main"/>
 </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -49,7 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:inputType="textPassword"
-            android:background="#15ffffff"/>
+            android:background="#15ffffff"
+            android:textColor="@color/main"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button
         android:id="@+id/btnRegister"

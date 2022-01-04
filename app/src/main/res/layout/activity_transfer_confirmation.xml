@@ -4,6 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".transferConfirmation">
+    tools:context=".membersList">
+
+    <include layout="@layout/toolbar_transfer_list"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_transferConf"
+        android:layout_marginTop="50dp"
+        android:padding="4dp"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

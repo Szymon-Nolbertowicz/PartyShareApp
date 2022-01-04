@@ -103,6 +103,7 @@ class welcomeView : AppCompatActivity() {
         user["uID"] = uid
         user["email"] = email
         user["limitValue"] = limitValue
+        user["monthlySpend"] = 0
 
         if (usercheck != null) {
 

@@ -4,18 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login">
+    tools:context=".Login"
+    android:background="@drawable/partysharebg">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvEmail"
-        android:text="Login to your Account"
-        android:textSize="30dp"
-        android:textColor="@color/black"/>
+        android:src="@drawable/partysharelogo"
+        tools:ignore="MissingConstraints" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tvEmail"
@@ -27,12 +23,17 @@
         android:layout_marginStart="30dp"
         android:hint="Enter E-mail"
         android:layout_marginEnd="30dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:hintTextColor="#ff3a5c"
+        android:textColorHint="#ff3a5c">
         <EditText
             android:id="@+id/editEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:background="#15ffffff"
+            android:textColor="@color/main"
+            android:textColorHint="@color/main"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -44,12 +45,17 @@
         android:layout_marginStart="30dp"
         android:hint="Enter Password"
         android:layout_marginEnd="30dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:hintTextColor="@color/main"
+        android:textColorHint="#ff3a5c">
         <EditText
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColorHint="@color/main"
+            android:textColor="@color/main"
+            android:background="#15ffffff"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button
         android:id="@+id/btnLogin"
@@ -69,7 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin"
-        android:textColor="@color/design_default_color_primary_dark"
+        android:textColor="@color/main"
         android:layout_margin="30dp"
         android:text="Not a member? Register here!"
         android:textSize="20dp"
@@ -81,7 +87,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRegister"
-        android:textColor="@color/design_default_color_primary_dark"
+        android:textColor="@color/main"
         android:layout_margin="30dp"
         android:text="Forgot a password? Reset it here!"
         android:textSize="20dp"

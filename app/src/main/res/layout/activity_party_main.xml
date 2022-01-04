@@ -13,7 +13,7 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello "
+        tools:text="Hello "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarPM"
         android:layout_margin="30dp"
@@ -59,13 +59,39 @@
         android:id="@+id/tvMoney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="- 35.49 zł"
+        tools:text="- 35.49 zł"
         android:textSize="40dp"
         android:textStyle="bold"
         android:textColor="@color/main"
         app:layout_constraintTop_toBottomOf="@+id/tvStatus"
         app:layout_constraintLeft_toRightOf="@+id/ivReceiptList"
         app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTransStat"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Transfer status"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:fontFamily="@font/centurygothic"
+        app:layout_constraintTop_toBottomOf="@+id/tvMoney"
+        app:layout_constraintLeft_toRightOf="@+id/ivReceiptList"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:layout_marginTop="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tvTransStat"
+        tools:text="REQUESTED"
+        app:layout_constraintLeft_toRightOf="@+id/ivReceiptList"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/main"
+        android:textStyle="bold"
+        android:id="@+id/tvStatusValue"/>
+
 
     <View
         android:layout_marginTop="20dp"
@@ -170,7 +196,7 @@
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="Request transfer confirmation"
+        tools:text="Request transfer confirmation"
         app:layout_constraintTop_toBottomOf="@+id/btnConfirmPayment"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/line2PM"

@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import java.io.Console
+import kotlin.math.abs
 
 class friendsListParty : AppCompatActivity() {
 
@@ -97,31 +99,77 @@ class friendsListParty : AppCompatActivity() {
                         }
 
                         else {
-                            database.collection("parties").document(partyID)
-                                .get()
-                                .addOnCompleteListener {
-                                    if(it.isSuccessful) {
-                                        var currMemberQty = it.result.data!!.getValue("membersQty").toString().toInt()
-                                        currMemberQty++
-                                        database.collection("parties").document(partyID)
-                                            .update("membersQty", currMemberQty)
-                                    }
-                                }
 
                             database.collection("users").document(clickedItem)
                                 .get()
                                 .addOnCompleteListener {
                                     if (it.isSuccessful) {
+                                        val addedMemberID = it.result.data!!.getValue("uID").toString()
                                         updateParty["balance"] = 0
                                         updateParty["firstName"] = it.result.data!!.getValue("firstName")
                                         updateParty["lastName"] = it.result.data!!.getValue("lastName")
                                         updateParty["uID"] = it.result.data!!.getValue("uID")
                                         updateParty["role"] = "member"
-
-
+                                        updateParty["transferStatus"] = "NOT REQUESTED YET"
 
                                         database.collection("parties").document(partyID).collection("members").document(clickedItem)
                                             .set(updateParty)
+
+                                        database.collection("parties").document(partyID)
+                                            .get()
+                                            .addOnCompleteListener {
+                                                if(it.isSuccessful) {
+                                                    var currMemberQty = it.result.data!!.getValue("membersQty").toString().toInt()
+                                                    val total = it.result.data!!.getValue("total").toString().toDouble()
+                                                    Log.e("currMemberQty:", currMemberQty.toString())
+                                                    currMemberQty++
+                                                    val perMember = total/currMemberQty * -1
+                                                    Log.e("perMember:", perMember.toString())
+                                                    val correction = perMember + (perMember / (currMemberQty - 1))
+                                                    Log.e("Correction:", correction.toString())
+                                                    database.collection("parties").document(partyID)
+                                                        .update("membersQty", currMemberQty)
+
+                                                    database.collection("parties").document(partyID).collection("members").document(addedMemberID)
+                                                        .update("balance", correction)
+
+                                                    val monthlyAdded = abs(correction)
+                                                    Log.e("MonthlyAdded: ", monthlyAdded.toString())
+
+                                                    database.collection("users").document(addedMemberID)
+                                                        .update("monthlySpend", monthlyAdded)
+
+                                                    database.collection("parties").document(partyID).collection("members")
+                                                        .get()
+                                                        .addOnCompleteListener {
+                                                            if(it.isSuccessful) {
+                                                                for(document in it.result) {
+                                                                    val balanceUpdate = (perMember / (currMemberQty - 1))
+                                                                    val memberUID = document.data.getValue("uID").toString()
+                                                                    val currBalance = document.data.getValue("balance").toString().toDouble()
+                                                                    val balanceToSend = currBalance - balanceUpdate
+
+                                                                    database.collection("parties").document(partyID).collection("members").document(memberUID)
+                                                                        .update("balance", balanceToSend)
+
+                                                                    database.collection("users").document(memberUID)
+                                                                        .get()
+                                                                        .addOnCompleteListener {
+                                                                            if(it.isSuccessful){
+                                                                                val currMonthlySpendings = it.result.data!!.getValue("monthlySpend").toString().toDouble()
+                                                                                val updatedMonthlySpendings = currMonthlySpendings + balanceUpdate
+                                                                                Log.e("updatedMonthleSpending:", updatedMonthlySpendings.toString())
+                                                                                Log.e("currMonthlySpendings: ", currMonthlySpendings.toString())
+                                                                                Log.e("balanceUpdate:", balanceUpdate.toString())
+                                                                                database.collection("users").document(memberUID)
+                                                                                    .update("monthlySpend", updatedMonthlySpendings)
+                                                                            }
+                                                                        }
+                                                                }
+                                                            }
+                                                        }
+                                                }
+                                            }
                                     }
                                 }
                         }

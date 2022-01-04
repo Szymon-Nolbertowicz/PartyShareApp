@@ -2,10 +2,13 @@ package com.example.partyshare
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +20,7 @@ class Dashboard : AppCompatActivity() {
     private lateinit var auth:FirebaseAuth
     private lateinit var database:FirebaseFirestore
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -24,12 +28,17 @@ class Dashboard : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseFirestore.getInstance()
 
+        val c = Calendar.getInstance()
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
 
         val toProfile = findViewById(R.id.navToProfile) as ImageView
-        val btnFriendsList = findViewById<Button>(R.id.btnFriendsList)
-        val btnCreateParty = findViewById<Button>(R.id.btnCreate)
-        val btnPartyList = findViewById<Button>(R.id.btnPartyList)
+        val btnFriendsList = findViewById<TextView>(R.id.btnFriendsList)
+        val btnCreateParty = findViewById<TextView>(R.id.btnCreate)
+        val btnPartyList = findViewById<TextView>(R.id.btnPartyList)
+        val btnStatistics = findViewById<TextView>(R.id.btnStats)
 
+        resetStatsMonthly()
 
 
         btnPartyList.setOnClickListener {
@@ -58,6 +67,11 @@ class Dashboard : AppCompatActivity() {
             startActivity(intent)
         }
 
+        btnStatistics.setOnClickListener {
+            val intent = Intent(this, statsView::class.java)
+            startActivity(intent)
+        }
+
         btnCreateParty.setOnClickListener {
             var newUUID = UUID.randomUUID().toString()
             val builder = AlertDialog.Builder(this)
@@ -75,6 +89,25 @@ class Dashboard : AppCompatActivity() {
             builder.show()
         }
 
+
+    }
+
+    private fun resetStatsMonthly() {
+        val c = Calendar.getInstance()
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        if(day == 1) {
+            database.collection("users")
+                .get()
+                .addOnCompleteListener {
+                    if(it.isSuccessful) {
+                        for (user in it.result) {
+                            database.collection("users").document(user.data.getValue("uID").toString())
+                                .update("monthlySpend", 0)
+                        }
+                    }
+                }
+        }
 
     }
 
@@ -105,6 +138,7 @@ class Dashboard : AppCompatActivity() {
                             host["uID"] = currUser.uid
                             host["role"] = "host"
                             host["balance"] = 0
+                            host["transferStatus"] = "null"
 
                             database.collection("parties").document(partyID).collection("members").document(currUser.uid)
                                 .set(host);

@@ -1,8 +1,16 @@
 package com.example.partyshare
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +19,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import org.w3c.dom.Text
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -20,10 +31,21 @@ class party_main : AppCompatActivity() {
 
     private lateinit var auth:FirebaseAuth
     private lateinit var db:FirebaseFirestore
+    private var permissionGrantedFlag: Boolean = false
+
+    val CHANNEL_ID = "channelID"
+    val CHANNEL_NAME = "channelName"
+    val NOTIFICATION_ID = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_party_main)
+        createNotifitactionChannel()
+
+        val currentTimeStamp = System.currentTimeMillis()
+        Log.e("currentTimeStamp", currentTimeStamp.toString())
+
+
 
         val partyID = intent.getStringExtra("PARTY_ID").toString()
         val partyName = intent.getStringExtra("PARTY_NAME").toString()
@@ -32,20 +54,23 @@ class party_main : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
+        checkLimit()
+
         val etWelcomeText = findViewById<TextView>(R.id.tvName)
         val toolbarName = findViewById<TextView>(R.id.etTollbarName)
         val tvBalance = findViewById<TextView>(R.id.tvMoney)
-
-        //updateDatabase(partyID)
-        setInfo(etWelcomeText, toolbarName, partyName, partyID, tvBalance)
-
+        val tvStatusValue = findViewById<TextView>(R.id.tvStatusValue)
         val btnAddExpense = findViewById<ImageView>(R.id.btnAddExpense)
         val btnMembers = findViewById<ImageView>(R.id.btnViewMembers)
         val btnScanExpense = findViewById<ImageView>(R.id.btnScanner)
         val btnConfirmPayment = findViewById<ImageView>(R.id.btnConfirmPayment)
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
         val btnReceiptList = findViewById<ImageView>(R.id.ivReceiptList)
+        val tvConfirmPayment = findViewById<TextView>(R.id.tvConfirmPayment)
+        val tvStatusText = findViewById<TextView>(R.id.tvTransStat)
 
+        permissionCheck(partyID, tvConfirmPayment)
+        setInfo(etWelcomeText, toolbarName, partyName, partyID, tvBalance, tvStatusValue, tvStatusText)
 
         btnReceiptList.setOnClickListener {
             intent = Intent(this, expenseList::class.java)
@@ -91,14 +116,93 @@ class party_main : AppCompatActivity() {
         }
 
         btnConfirmPayment.setOnClickListener {
-            TODO("Not implemented yet")
+            if(!permissionGrantedFlag) {
+                requestTransferConfirmation(partyID)
+            } else {
+                val intent = Intent(this, transferConfirmation::class.java)
+                    .putExtra("PARTY_ID", partyID)
+                    .putExtra("PARTY_NAME", partyName)
+                startActivity(intent)
+            }
         }
 
         btnBack.setOnClickListener {
             val intent = Intent(this, partyList::class.java)
             startActivity(intent)
         }
+        Log.e("FLAG?!", permissionGrantedFlag.toString())
+        setInfo(etWelcomeText, toolbarName, partyName, partyID, tvBalance, tvStatusValue, tvStatusText)
 
+    }
+
+    private fun requestTransferConfirmation(partyID: String) {
+        val currUserID = auth.currentUser!!.uid
+        db.collection("parties").document(partyID).collection("members").document(currUserID)
+            .update("transferStatus", "REQUESTED")
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun permissionCheck(partyID: String, tvConfirmPayment: TextView) {
+        val currUserID = auth.currentUser!!.uid
+        var role: String = ""
+        db.collection("parties").document(partyID).collection("members").document(currUserID)
+            .get()
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    role = it.result.data!!.getValue("role").toString()
+                    if(role != "host") {
+                        permissionGrantedFlag = false
+                        tvConfirmPayment.text = "Request transfer confirmation"
+                    }
+                    else {
+                        permissionGrantedFlag = true
+                        tvConfirmPayment.text = "Check members balance and confirm transfer"
+                    }
+                }
+            }
+    }
+
+    private fun checkLimit() {
+        db.collection("users").document(auth.currentUser!!.uid)
+            .get()
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                   val currSpendings = it.result.data!!.getValue("monthlySpend").toString().toDouble()
+                   val userLimit = it.result.data!!.getValue("limitValue").toString().toDouble()
+
+                   if(currSpendings > userLimit) {
+                       val intent = Intent(this, statsView::class.java)
+                       val pendingIntent = TaskStackBuilder.create(this).run {
+                           addNextIntentWithParentStack(intent)
+                           getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                       }
+
+                       val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                           .setContentTitle("You are over your monthly budget!")
+                           .setContentText("Check out statistics in your App or click here")
+                           .setContentIntent(pendingIntent)
+                           .setSmallIcon(R.drawable.ic_warning)
+                           .setPriority(NotificationCompat.PRIORITY_HIGH)
+                           .build()
+
+                       val notificationManager = NotificationManagerCompat.from(this)
+                       notificationManager.notify(NOTIFICATION_ID, notification)
+
+                   }
+                }
+            }
+    }
+
+    private fun createNotifitactionChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_HIGH).apply {
+                lightColor = Color.RED
+                enableLights(true)
+            }
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+        }
     }
 
     private fun updateDatabase(partyID: String, value: Double) {
@@ -120,6 +224,18 @@ class party_main : AppCompatActivity() {
                                     solution = String.format("%.2f", solution).toDouble()
                                     db.collection("parties").document(partyID).collection("members").document(uID)
                                         .update("balance", solution)
+
+                                    db.collection("users").document(uID)
+                                        .get()
+                                        .addOnCompleteListener {
+                                            if(it.isSuccessful){
+                                                val currMonthlySpendings = it.result.data!!.getValue("monthlySpend").toString().toDouble()
+                                                val updatedMonthlySpendings = currMonthlySpendings + perMember
+                                                Log.e("Updated in func:", updatedMonthlySpendings.toString())
+                                                db.collection("users").document(uID)
+                                                    .update("monthlySpend", updatedMonthlySpendings)
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -187,10 +303,15 @@ class party_main : AppCompatActivity() {
                 }
             }
 
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setInfo(etWelcomeText: TextView, toolbarName: TextView, partyName: String, partyID: String, tvBalance: TextView) {
+    private fun setInfo(etWelcomeText: TextView, toolbarName: TextView, partyName: String, partyID: String, tvBalance: TextView, transferStatusValue: TextView, transferStatusText: TextView) {
         val currUser = auth.currentUser
         db.collection("users")
             .whereEqualTo("uID", currUser!!.uid)
@@ -211,11 +332,18 @@ class party_main : AppCompatActivity() {
             .whereEqualTo("uID", currUser.uid)
             .get()
             .addOnCompleteListener {
-                val balance = StringBuffer()
+                val balance = StringBuilder()
                 if(it.isSuccessful) {
                     Log.e("in if", "in if")
                     for (document in it.result) {
-                        balance.append(document.data.getValue("balance")).append(" zł")
+                        if(document.data.getValue("transferStatus") != "null") {
+                            val transferStatus = document.data.getValue("transferStatus")
+                            transferStatusText.text = "Transfer status"
+                            transferStatusValue.text = transferStatus.toString()
+                        }
+                        val balance2send = document.data.getValue("balance").toString().toDouble()
+                        val formattedBalance = String.format("%.2f", balance2send).toDouble()
+                        balance.append(formattedBalance).append(" zł")
                     }
                 tvBalance.text = balance
                 }

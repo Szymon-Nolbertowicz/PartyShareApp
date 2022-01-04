@@ -26,7 +26,7 @@ class membersList : AppCompatActivity() {
     private lateinit var database: FirebaseFirestore
     private lateinit var userArrayList: ArrayList<user>
     private lateinit var myAdapter: UsersAdapter
-    private var permissionGrantedFlag by Delegates.notNull<Boolean>()
+    private var permissionGrantedFlag: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

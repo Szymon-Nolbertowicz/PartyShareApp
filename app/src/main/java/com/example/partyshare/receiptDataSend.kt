@@ -154,11 +154,25 @@ class receiptDataSend : AppCompatActivity() {
                                     var solution = currBalance - perMember
                                     solution = String.format("%.2f", solution).toDouble()
                                     Log.e("balance poprawiony", solution.toString())
+
                                     //Pozniej sprawdz czy da sie to sprowadzic do latwirjszej postaci
+
                                     database.collection("parties").document(partyID).collection("members").document(ID)
                                         .update("balance", solution)
                                     Log.e("balance poprawiony", solution.toString())
+
+                                    database.collection("users").document(ID)
+                                        .get()
+                                        .addOnCompleteListener {
+                                            if(it.isSuccessful){
+                                                val currMonthlySpendings = it.result.data!!.getValue("monthlySpend").toString().toDouble()
+                                                val updatedMonthlySpendings = currMonthlySpendings + perMember
+                                                database.collection("users").document(ID)
+                                                    .update("monthlySpend", updatedMonthlySpendings)
+                                            }
+                                        }
                                 }
+
                             }
                         }
                 }
