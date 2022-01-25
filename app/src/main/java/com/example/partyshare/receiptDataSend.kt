@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -22,7 +21,7 @@ class receiptDataSend : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseFirestore
-    private lateinit var expenseArrayList: ArrayList<receipt>
+    private lateinit var expenseArrayList: ArrayList<Receipt>
     private lateinit var myAdapter: receiptAdapter
 
 
@@ -39,7 +38,7 @@ class receiptDataSend : AppCompatActivity() {
         val partyName = getIntent().getStringExtra("PARTY_NAME").toString()
         val fullName = getIntent().getStringExtra("FULLNAME").toString()
 
-        val typeToken = object : TypeToken<ArrayList<receipt>>() {}.type
+        val typeToken = object : TypeToken<ArrayList<Receipt>>() {}.type
 
         val recyclerView = findViewById<RecyclerView>(R.id.recycleViewDataSend)
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
@@ -57,7 +56,7 @@ class receiptDataSend : AppCompatActivity() {
 
 
         expenseArrayList = Gson().fromJson(ArrayAsString, typeToken)
-        myAdapter = receiptAdapter(expenseArrayList as MutableList<receipt>)
+        myAdapter = receiptAdapter(expenseArrayList as MutableList<Receipt>)
         var adapter = myAdapter
 
 
@@ -74,7 +73,7 @@ class receiptDataSend : AppCompatActivity() {
 
     }
 
-    private fun sendData(arrayOfExpenses: ArrayList<receipt>, partyID: String, fullName: String, partyName: String) {
+    private fun sendData(arrayOfExpenses: ArrayList<Receipt>, partyID: String, fullName: String, partyName: String) {
 
         //Upload confirmed data to FirebaseFirestore
         var currUserUID = auth.currentUser!!.uid

@@ -1,8 +1,10 @@
 package com.example.partyshare
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.renderscript.Sampler
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,10 +23,13 @@ class expenseList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_expense_list)
-        val partyID = getIntent().getStringExtra("PARTY_ID").toString()
-        val partyName = getIntent().getStringExtra("PARTY_NAME").toString()
+        val partyID = intent.getStringExtra("PARTY_ID").toString()
+        val partyName = intent.getStringExtra("PARTY_NAME").toString()
+
 
         database = FirebaseFirestore.getInstance()
+
+
         auth = FirebaseAuth.getInstance()
 
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
@@ -42,7 +47,7 @@ class expenseList : AppCompatActivity() {
 
         expenseArrayList = arrayListOf()
         myAdapter = expenseAdapter(expenseArrayList)
-        var adapter = myAdapter
+        val adapter = myAdapter
 
 
         recyclerView.apply {
@@ -53,7 +58,7 @@ class expenseList : AppCompatActivity() {
         adapter.setOnItemClickListener(object : expenseAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
                 val clickedItem: String = expenseArrayList[position].expenseName.toString()
-                Log.e("user position", clickedItem.toString())
+                Log.e("user position", clickedItem)
             }
         })
 
@@ -61,22 +66,23 @@ class expenseList : AppCompatActivity() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setInfo(etToolbar: TextView, partyID: String) {
         database.collection("parties").document(partyID)
             .get()
             .addOnCompleteListener {
                 if(it.isSuccessful) {
                     val total = it.result.data!!.getValue("total")
-                    etToolbar.text = "TOTAL PARTY COST: " + total.toString()
+                    etToolbar.text = "TOTAL PARTY COST: $total"
                 }
             }
 
     }
 
     private fun EventChangeListener(partyID: String) {
-            val currUser = auth.currentUser!!
             database.collection("parties").document(partyID).collection("expenses")
                 .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                    @SuppressLint("NotifyDataSetChanged")
                     override fun onEvent(
                         value: QuerySnapshot?,
                         error: FirebaseFirestoreException?
@@ -88,16 +94,25 @@ class expenseList : AppCompatActivity() {
                         for (dc: DocumentChange in value?.documentChanges!!){
                             if(dc.type == DocumentChange.Type.ADDED) {
                                 expenseArrayList.add((dc.document.toObject(expense::class.java)))
-                                Log.e("lsita", expenseArrayList.toString())
-
                             }
                         }
-
                         myAdapter.notifyDataSetChanged()
                     }
                 })
 
     }
 
+    private fun test (userID: String, value: String) {
 
+        database.collection("users").document("userID")
+            .update("key", "value")
+
+        val intent = Intent(this, Dashboard::class.java)
+            .putExtra("KEY", value)
+        startActivity(intent)
+
+
+        val passedValue = getIntent().getStringExtra("KEY")
+
+    }
 }

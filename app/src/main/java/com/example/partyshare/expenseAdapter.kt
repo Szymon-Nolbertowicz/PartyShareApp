@@ -2,8 +2,7 @@ package com.example.partyshare
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import androidx.appcompat.view.menu.ActionMenuItemView
+
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 

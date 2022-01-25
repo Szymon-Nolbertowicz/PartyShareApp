@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         android:layout_margin="30dp"
-        android:text="Upload your image below and scan the products you bought. For the best user experience please crop the image to the products section only."
+        android:text="Upload your image below and scan the products you bought. For the best user experience please crop the image to the products section only. Example below."
         android:textAlignment="center"/>
 
     /*<ImageView

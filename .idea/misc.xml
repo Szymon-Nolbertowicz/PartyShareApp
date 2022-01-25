@@ -28,7 +28,7 @@
         <entry key="app/src/main/res/layout/activity_party_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_password_change.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/activity_receipt_data_send.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_receipt_scanner.xml" value="0.25677083333333334" />
+        <entry key="app/src/main/res/layout/activity_receipt_scanner.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_stats_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_transfer_confirmation.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_user_create.xml" value="0.22291666666666668" />

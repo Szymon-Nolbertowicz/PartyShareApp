@@ -7,13 +7,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.TextUtils.listEllipsize
-import android.text.TextUtils.replace
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +22,6 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class receiptScanner : AppCompatActivity() {
@@ -38,7 +32,7 @@ class receiptScanner : AppCompatActivity() {
     private lateinit var ivCroppedImage: ImageView
     private lateinit var tvResult: TextView
     private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
-    private lateinit var arrayOfElements: ArrayList<receipt>
+    private lateinit var arrayOfElements: ArrayList<Receipt>
 
     private val TAG = "ML_Kit_text_recognition"
     private val testImage = R.drawable.testimage1
@@ -79,6 +73,8 @@ class receiptScanner : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
         val btnExtract = findViewById<Button>(R.id.btnExtractText)
         tvResult = findViewById<EditText>(R.id.tvResult)
+
+
         cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
             it?.let {
                 uri ->
@@ -97,7 +93,9 @@ class receiptScanner : AppCompatActivity() {
         }
 
         btnBack.setOnClickListener {
-            val intent = Intent(this, Dashboard::class.java)
+            val intent = Intent(this, party_main::class.java)
+                .putExtra("PARTY_ID", partyID)
+                .putExtra("PARTY_NAME", partyName)
             startActivity(intent)
             finish()
         }
@@ -119,7 +117,7 @@ class receiptScanner : AppCompatActivity() {
                         for(line in block.lines) {
                             if (counter == 1) {
                                 if(line.text.length > 2) {
-                                    val receiptItem = receipt()
+                                    val receiptItem = Receipt()
                                     val uuid = UUID.randomUUID()
                                     receiptItem.expenseID = uuid.toString()
                                     receiptItem.expenseName = line.text
@@ -139,11 +137,11 @@ class receiptScanner : AppCompatActivity() {
                         }
                     }
 
-                    Log.d(TAG, "Successful recognition")
-                    Log.e("Array of elements", arrayOfElements.toString())
-                    Log.e("Sum", sum.toString())
+
                     val intent = Intent(this, receiptDataSend::class.java)
+
                     val ArrayAsString = Gson().toJson(arrayOfElements)
+
                     intent.putExtra("Array", ArrayAsString)
                         .putExtra("Sum", sum)
                         .putExtra("PARTY_ID", partyID)
@@ -155,6 +153,9 @@ class receiptScanner : AppCompatActivity() {
                 }
                 .addOnFailureListener {
                     Log.d(TAG, "Unsuccessful recognition", it)
+                    val intent = Intent(this, receiptScanner::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "Try again, something went wrong...", Toast.LENGTH_SHORT).show()
                 }
     }
 

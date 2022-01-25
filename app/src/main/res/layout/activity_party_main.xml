@@ -9,6 +9,17 @@
     <include layout="@layout/toolbar_party_main"
         android:id="@+id/toolbarPM"/>
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"

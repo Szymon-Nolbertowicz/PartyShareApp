@@ -1,5 +1,6 @@
 package com.example.partyshare
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -11,11 +12,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.tasks.Task
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.auth.User
 
 class friendsList : AppCompatActivity() {
 
@@ -32,7 +31,7 @@ class friendsList : AppCompatActivity() {
         database = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        val recyclerView = findViewById(R.id.recycleViewA) as RecyclerView
+        val recyclerView = findViewById<RecyclerView>(R.id.recycleViewA)
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
         val addUser = findViewById<FloatingActionButton>(R.id.addUserBtn)
         val btnInvitations = findViewById<FloatingActionButton>(R.id.invitationsUserBtn)
@@ -49,11 +48,6 @@ class friendsList : AppCompatActivity() {
 
         userArrayList = arrayListOf()
         myAdapter = UsersAdapter(userArrayList)
-
-        /*for (i in 0..100) {
-            users.add(user("First Name #" + i, "Last Name #" + i, "usermail@example.com"))
-            users[i].LastName?.let { Log.e("user", it) }
-        }*/
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@friendsList)
@@ -83,6 +77,7 @@ class friendsList : AppCompatActivity() {
         val currUser = auth.currentUser!!
         database.collection("users").document(currUser.uid).collection("friends")
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onEvent(
                     value: QuerySnapshot?,
                     error: FirebaseFirestoreException?
@@ -107,13 +102,12 @@ class friendsList : AppCompatActivity() {
     private fun friendRequest(email: String){
         val requestStatusRec: MutableMap<String, Any> = HashMap()
         val currUser = auth.currentUser!!
-        var friendUID: String = "x"
+        var friendUID = "x"
         database.collection("users")
             .get()
             .addOnCompleteListener {
-                val mail: StringBuffer = StringBuffer()
                 if(it.isSuccessful) {
-                    for(document in it.result!!) {
+                    for(document in it.result) {
                         if(document.data.getValue("uID").toString() == currUser.uid) {
                             requestStatusRec["firstName"] = document.data.getValue("firstName")
                             requestStatusRec["lastName"] = document.data.getValue("lastName")
@@ -128,7 +122,7 @@ class friendsList : AppCompatActivity() {
                         if(document.data.getValue("email").toString() == email ) {
                             Log.d("User UID", document.data.getValue("uID").toString())
                             friendUID = document.data.getValue("uID").toString()
-                            var user = auth.currentUser
+                            val user = auth.currentUser
                             Log.e("REQUESTED3", requestStatusRec.toString())
                             if(user != null)
                             {

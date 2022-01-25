@@ -26,11 +26,11 @@ class emailChange : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        var etCurrent = findViewById<EditText>(R.id.currentPassword)
-        var etConfirm = findViewById<EditText>(R.id.etConfirmEmail)
-        var etNewMail = findViewById<EditText>(R.id.etNewEmail)
-        var tvChange = findViewById<TextView>(R.id.tvChangeMail)
-        var btnBack = findViewById<ImageView>(R.id.onBackToMenu)
+        val etCurrent = findViewById<EditText>(R.id.currentPassword)
+        val etConfirm = findViewById<EditText>(R.id.etConfirmEmail)
+        val etNewMail = findViewById<EditText>(R.id.etNewEmail)
+        val tvChange = findViewById<TextView>(R.id.tvChangeMail)
+        val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
 
         tvChange.setOnClickListener {
             changeEmail(etCurrent.text.toString(), etNewMail.text.toString(), etConfirm.text.toString())
@@ -41,28 +41,23 @@ class emailChange : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-
-
     }
 
-
-
-    fun changeEmail(current: String, new:String, confirm:String){
+    private fun changeEmail(current: String, new:String, confirm:String){
         if(current.isNotEmpty() && new.isNotEmpty() && confirm.isNotEmpty())
         {
-            if(new.toString().equals(confirm.toString())) {
+            if(new == confirm) {
                 val user = auth.currentUser
                 if(user != null && user.email != null) {
                     val credential = EmailAuthProvider
                         .getCredential(user.email!!, current)
 
-                    user?.reauthenticate(credential)
-                        ?.addOnCompleteListener {
+                    user.reauthenticate(credential)
+                        .addOnCompleteListener {
                             if(it.isSuccessful){
                                 Log.e("reAuthenticationStatus", "User re-authenticated.")
-                                user?.updateEmail(new)
-                                    ?.addOnCompleteListener { task ->
+                                user.updateEmail(new)
+                                    .addOnCompleteListener { task ->
                                         if(task.isSuccessful){
                                             Toast.makeText(this, "User mail updated", Toast.LENGTH_SHORT).show()
                                             val data = hashMapOf("email" to new)
@@ -71,8 +66,7 @@ class emailChange : AppCompatActivity() {
 
                                         }
                                     }
-                            }
-                            else{
+                            } else{
                                 Log.e("reAuthenticationStatus", "User re-authentication failed.")
                                 Toast.makeText(this, "Wrong current password", Toast.LENGTH_SHORT).show()
                             }

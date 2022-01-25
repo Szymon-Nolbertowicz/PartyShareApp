@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import org.w3c.dom.Document
+
 
 class friendsRequestsList : AppCompatActivity() {
 
@@ -26,9 +26,8 @@ class friendsRequestsList : AppCompatActivity() {
         database = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        val recyclerView = findViewById(R.id.recycle_Viewer) as RecyclerView
+        val recyclerView = findViewById<RecyclerView>(R.id.recycle_Viewer)
         val btnBack = findViewById<ImageView>(R.id.onBackToMenu)
-        val userAccept = findViewById<ImageView>(R.id.accept)
 
         btnBack.setOnClickListener {
             val intent = Intent(this, friendsList::class.java)
@@ -39,7 +38,7 @@ class friendsRequestsList : AppCompatActivity() {
         //}
         userArrayList = arrayListOf()
         myAdapter = UsersInvAdapter(userArrayList)
-        var adapter = myAdapter
+        val adapter = myAdapter
 
 
         recyclerView.apply {
@@ -49,16 +48,18 @@ class friendsRequestsList : AppCompatActivity() {
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener(object : UsersInvAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                var currUser = auth.currentUser!!
-                Toast.makeText(this@friendsRequestsList, "You clicked on item no. $position", Toast.LENGTH_SHORT).show()
+                val currUser = auth.currentUser!!
+                Toast.makeText(this@friendsRequestsList, "Invitation accepted!", Toast.LENGTH_SHORT).show()
                 val clickedItem: String = userArrayList[position].uID.toString()
-                Log.e("user position", clickedItem.toString())
                 val requestStatus: MutableMap<String, Any> = HashMap()
                 requestStatus["status"] = "friends"
                 database.collection("users").document(currUser.uid).collection("friends").document(clickedItem)
                     .update(requestStatus)
                 database.collection("users").document(clickedItem).collection("friends").document(currUser.uid)
                     .update(requestStatus)
+
+                val intent = Intent(this@friendsRequestsList, friendsList::class.java)
+                startActivity(intent)
             }
         })
 

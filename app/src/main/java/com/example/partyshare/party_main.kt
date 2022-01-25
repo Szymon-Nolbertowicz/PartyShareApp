@@ -14,10 +14,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -41,11 +39,6 @@ class party_main : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_party_main)
         createNotifitactionChannel()
-
-        val currentTimeStamp = System.currentTimeMillis()
-        Log.e("currentTimeStamp", currentTimeStamp.toString())
-
-
 
         val partyID = intent.getStringExtra("PARTY_ID").toString()
         val partyName = intent.getStringExtra("PARTY_NAME").toString()
@@ -131,14 +124,37 @@ class party_main : AppCompatActivity() {
             startActivity(intent)
         }
         Log.e("FLAG?!", permissionGrantedFlag.toString())
-        setInfo(etWelcomeText, toolbarName, partyName, partyID, tvBalance, tvStatusValue, tvStatusText)
+        //setInfo(etWelcomeText, toolbarName, partyName, partyID, tvBalance, tvStatusValue, tvStatusText)
 
+        refreshBalance(tvBalance, partyID)
+    }
+
+    private fun refreshBalance(tvBalance: TextView, partyID: String) {
+        Thread.sleep(500)
+        db.collection("parties").document(partyID).collection("members").document(auth.currentUser!!.uid)
+            .get()
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    val text = it.result.data!!.getValue("balance").toString().toDouble()
+                    val text2send = String.format("%.2f", text).toString()
+                    tvBalance.text = text2send
+                    findViewById<RelativeLayout>(R.id.loadingPanel).visibility = View.GONE;
+                }
+            }
+        //findViewById<RelativeLayout>(R.id.loadingPanel).visibility = View.GONE;
     }
 
     private fun requestTransferConfirmation(partyID: String) {
         val currUserID = auth.currentUser!!.uid
         db.collection("parties").document(partyID).collection("members").document(currUserID)
             .update("transferStatus", "REQUESTED")
+
+        Toast.makeText(this, "Request has been sent to host!", Toast.LENGTH_LONG).show()
+
+        finish();
+        overridePendingTransition(500, 500);
+        startActivity(intent);
+        overridePendingTransition(500, 500);
     }
 
     @SuppressLint("SetTextI18n")
@@ -281,6 +297,7 @@ class party_main : AppCompatActivity() {
                         .update(updateUserBalance)
                 }
             }
+
         val expenseID = UUID.randomUUID().toString()
         updateExpenseList["ID"] = expenseID
         updateExpenseList["expenseName"] = name
@@ -296,7 +313,8 @@ class party_main : AppCompatActivity() {
                         val lastName = document.data.getValue("lastName").toString()
                         fullname = "$firstName $lastName"
                         updateExpenseList["addedBy"] = fullname
-                        db.collection("parties").document(partyID).collection("expenses").document(expenseID)
+                        db.collection("parties").document(partyID)
+                            .collection("expenses").document(expenseID)
                             .set(updateExpenseList)
 
                     }
@@ -304,9 +322,9 @@ class party_main : AppCompatActivity() {
             }
 
         finish();
-        overridePendingTransition(0, 0);
-        startActivity(getIntent());
-        overridePendingTransition(0, 0);
+        overridePendingTransition(1, 1);
+        startActivity(intent);
+        overridePendingTransition(1, 1);
 
     }
 
@@ -345,7 +363,7 @@ class party_main : AppCompatActivity() {
                         val formattedBalance = String.format("%.2f", balance2send).toDouble()
                         balance.append(formattedBalance).append(" zł")
                     }
-                tvBalance.text = balance
+                //tvBalance.text = balance
                 }
 
             }

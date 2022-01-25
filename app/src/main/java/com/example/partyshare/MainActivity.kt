@@ -57,13 +57,12 @@ class MainActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Log.e(" Task Message", "Successful ...")
-                        
                         var intent = Intent(this, welcomeView::class.java)
                         startActivity(intent)
 
                     } else {
                         Log.e("Task Message", "Failed ..." + task.exception)
+                        Toast.makeText(this, "Something went wrong, try again in 5 minutes...", Toast.LENGTH_LONG).show()
                     }
                 }
     }
